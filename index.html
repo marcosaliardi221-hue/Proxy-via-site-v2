@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROXY DUARTE V6 - ESP ONLY</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif}
+body{background:#050a14;color:#fff;min-height:100vh;padding:15px}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 30%, rgba(0,212,255,0.15), transparent 50%), radial-gradient(circle at 80% 70%, rgba(0,255,136,0.12), transparent 50%), linear-gradient(180deg,#050a14 0%,#0a1629 100%);z-index:-2}
+.grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);background-size:40px 40px;z-index:-1}
+.header{display:flex;align-items:center;justify-content:space-between;margin:10px 5px 22px;padding:14px 18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;backdrop-filter:blur(12px)}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo{width:56px;height:56px;background:conic-gradient(from 0deg,#00d4ff,#00ff88,#00d4ff);border-radius:16px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px}
+.logo span{background:#050a14;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.header-title{font-weight:900;font-size:18px;font-family:'JetBrains Mono';background:linear-gradient(90deg,#fff,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-subtitle{font-size:10px;font-weight:800;color:#00ff88;letter-spacing:2px;margin-top:2px;font-family:'JetBrains Mono'}
+.gear{width:46px;height:46px;background:rgba(255,255,255,0.06);border-radius:14px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.1);font-size:20px;cursor:pointer}
+.section-label{font-size:10px;color:#5a6d8a;letter-spacing:2.5px;font-weight:800;margin:24px 8px 12px;font-family:'JetBrains Mono'}
+.card{background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.08);border-radius:22px;padding:18px;display:flex;align-items:center;gap:14px;margin-bottom:12px;cursor:pointer;backdrop-filter:blur(15px);transition:all .3s}
+.card-icon{width:58px;height:58px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.card-title{font-weight:800;font-size:15.5px}
+.card-desc{font-size:12px;color:#8a9bb0;margin-top:3px}
+.badge{font-family:'JetBrains Mono';font-size:9.5px;padding:7px 12px;border-radius:99px;font-weight:800;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#8a9bb0}
+.status-card.conectado{border-color:rgba(0,255,136,0.4);background:linear-gradient(135deg,rgba(0,255,136,0.15),rgba(0,212,255,0.08));box-shadow:0 0 30px rgba(0,255,136,0.15)}
+.status-card.conectado .card-icon{background:linear-gradient(135deg,#00ff88,#00d4ff);color:#000}
+.status-card.conectado .card-title{color:#00ff88}
+.badge.conectado{background:#00ff88;color:#000}
+.func-card.ativado{border-color:#00ff88;background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.12));box-shadow:0 0 30px rgba(0,255,136,0.25)}
+.func-card.ativado .card-icon{background:#00ff88;color:#000;animation:pulseGlow 1.5s infinite}
+.func-card.ativado .card-title{color:#00ff88}
+@keyframes pulseGlow{0%{box-shadow:0 0 0 0 rgba(0,255,136,0.7)}70%{box-shadow:0 0 0 14px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
+.card.iniciar{background:linear-gradient(135deg,#00d4ff,#0066ff);border:none;box-shadow:0 10px 30px rgba(0,102,255,0.4)}
+.card.iniciar .card-title{color:#fff;font-size:17px}
+.card.iniciar .card-desc{color:rgba(255,255,255,0.8)}
+.card.iniciar .card-icon{background:rgba(255,255,255,0.2);border:none;color:#fff}
+.canal-card.whatsapp{border-left:3px solid #25D366}
+.canal-card.youtube{border-left:3px solid #FF0000}
+.aviso{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111a2a;border:1px solid rgba(255,255,255,0.1);color:#fff;padding:12px 22px;border-radius:99px;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:.4s;z-index:99}
+.aviso.show{opacity:1;bottom:35px}
+.aviso.green{border-color:#00ff88;color:#00ff88}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(5,10,20,0.8);backdrop-filter:blur(12px);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.overlay.show{display:flex}
+.modal{width:100%;max-width:480px;background:#0c1424;border:1px solid rgba(255,255,255,0.1);border-radius:32px 32px 0 0;max-height:92vh;overflow:hidden}
+.modal-header{padding:22px 18px 0;display:flex;justify-content:space-between;align-items:center}
+.modal-tabs{display:flex;gap:10px;padding:18px}
+.tab{flex:1;padding:13px;border-radius:16px;text-align:center;font-weight:800;font-size:12px;font-family:'JetBrains Mono';cursor:pointer;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#8a9bb0}
+.tab.active{background:linear-gradient(135deg,#00d4ff,#0066ff);color:#fff}
+.modal-content{padding:0 15px 30px;overflow-y:auto;max-height:70vh}
+.close-btn{width:38px;height:38px;background:rgba(255,255,255,0.06);border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.1);cursor:pointer}
+.info-hero{background:linear-gradient(135deg,#0a1a2a,#102a4a);border:1px solid rgba(0,212,255,0.2);border-radius:26px;padding:28px;text-align:center}
+.avatar{width:84px;height:84px;background:conic-gradient(#00d4ff,#00ff88,#00d4ff);border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:30px;padding:3px}
+.avatar span{background:#0a1a2a;width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.creator-name{font-size:20px;font-weight:900;font-family:'JetBrains Mono'}
+.creator-tag{font-size:10px;color:#00ff88;font-weight:800;letter-spacing:2px;margin-top:6px;font-family:'JetBrains Mono'}
+.status-box{display:flex;gap:10px;margin-top:20px}
+.status-item{flex:1;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);border-radius:16px;padding:12px;text-align:center}
+.status-item b{display:block;color:#00ff88;font-size:12px;font-family:'JetBrains Mono'}
+.status-item span{font-size:10px;color:#8a9bb0}
+.dot{width:8px;height:8px;background:#00ff88;border-radius:50%;display:inline-block;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.info-details{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.info-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px}
+#loginScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#050a14;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:100%;max-width:390px;background:linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.12);border-radius:32px;padding:32px;text-align:center;backdrop-filter:blur(20px)}
+.login-logo{width:88px;height:88px;background:conic-gradient(#00d4ff,#00ff88,#00d4ff);border-radius:24px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;padding:3px}
+.login-logo span{background:#0c1424;width:100%;height:100%;border-radius:21px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono'}
+.login-title{font-weight:900;font-size:24px;font-family:'JetBrains Mono';background:linear-gradient(90deg,#fff,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-sub{font-size:10px;color:#00ff88;font-weight:800;letter-spacing:2px;margin:8px 0 22px;font-family:'JetBrains Mono'}
+.login-input{width:100%;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:16px 16px 16px 48px;color:#fff;font-size:14px;outline:none;text-transform:uppercase;font-family:'JetBrains Mono'}
+.input-group{position:relative;margin:18px 0}
+.input-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:20px}
+.btn-login{width:100%;background:linear-gradient(135deg,#00d4ff,#0066ff);border:none;border-radius:16px;padding:16px;color:#fff;font-weight:900;letter-spacing:1px;cursor:pointer;margin-top:10px;font-family:'JetBrains Mono'}
+.login-error,.login-success{border-radius:14px;padding:12px;font-size:12px;font-weight:700;margin-top:14px;display:none;font-family:'JetBrains Mono'}
+.login-error{background:rgba(255,59,48,0.12);border:1px solid rgba(255,59,48,0.3);color:#ff5a52}
+.login-success{background:rgba(0,255,136,0.12);border:1px solid rgba(0,255,136,0.3);color:#00ff88}
+.login-error.show,.login-success.show{display:block}
+#mainContent{display:none}
+#mainContent.show{display:block}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div id="loginScreen">
+<div class="login-box">
+<div class="login-logo"><span>PROXY<br>DUARTE</span></div>
+<div class="login-title">PROXY DUARTE V6</div>
+<div class="login-sub">● ESP SYSTEM ONLINE ●</div>
+<div class="input-group"><div class="input-icon">🔑</div><input type="text" id="keyInput" class="login-input" placeholder="DIGITE SUA KEY"></div>
+<button class="btn-login" id="btnLogin" onclick="fazerLogin()">⚡ DESBLOQUEAR</button>
+<div id="loginError" class="login-error"></div>
+<div id="loginSuccess" class="login-success"></div>
+</div>
+</div>
+<div id="mainContent">
+<div class="header">
+<div class="header-left">
+<div class="logo"><span>PROXY<br>DUARTE</span></div>
+<div><div class="header-title">PROXY DUARTE V6</div><div class="header-subtitle">● ESP ONLY MODE</div></div>
+</div>
+<div class="gear" onclick="abrirModal()">⚙️</div>
+</div>
+<div id="telaPrincipal">
+<div class="section-label">► STATUS DO SISTEMA</div>
+<div class="card status-card conectado" style="cursor:default">
+<div class="card-icon">⚡</div>
+<div style="flex:1">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;">
+<div class="card-title">SISTEMA CONECTADO<br>PROXY ONLINE</div>
+<div class="badge conectado">● LIVE</div>
+</div>
+<div class="card-desc" style="margin-top:6px;color:#7fdb9f">Modo: AIM HEAD+ESP • 100% Ativo</div>
+</div>
+</div>
+<div class="section-label">► MÓDULO EXCLUSIVO</div>
+<div class="card func-card" id="func2" onclick="toggleFunc('func2')">
+<div class="card-icon" id="icon2">👁️</div>
+<div style="flex:1"><div class="card-title">AIM HEAD + ESP</div><div class="card-desc" id="desc2">Visão + Mira • Toque para ativar</div></div>
+<div class="badge" id="badge2">OFFLINE</div>
+</div><div class="card iniciar" id="btnProxy" onclick="iniciarProxy()">
+<div class="card-icon">🚀</div>
+<div style="flex:1"><div class="card-title">EXECUTAR PROXY ESP</div><div class="card-desc" id="descProxy">Ative o ESP primeiro</div></div>
+<div style="font-size:22px;color:#fff">→</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+<div class="section-label" style="margin-bottom:0">► REDE DUARTE</div>
+<div class="section-label" style="margin-bottom:0;opacity:0.4">ESP ONLY</div>
+</div>
+<div class="card canal-card whatsapp" onclick="abrirCanal('whatsapp')">
+<div class="card-icon">💬</div>
+<div style="flex:1"><div class="card-title" style="font-size:14px">WhatsApp Oficial</div><div class="card-desc">Updates em tempo real</div></div>
+<div style="font-size:20px;color:#25D366">›</div>
+</div>
+<div class="card canal-card youtube" onclick="abrirCanal('youtube')">
+<div class="card-icon">▶️</div>
+<div style="flex:1"><div class="card-title" style="font-size:14px">YouTube Oficial</div><div class="card-desc">Tutoriais e métodos novos</div></div>
+<div style="font-size:20px;color:#FF0000">›</div>
+</div>
+</div>
+<div class="overlay" id="overlay" onclick="fecharModal(event)">
+<div class="modal" onclick="event.stopPropagation()">
+<div class="modal-header">
+<div style="display:flex;align-items:center;gap:10px">
+<div class="logo" style="width:42px;height:42px;font-size:8px"><span>PROXY<br>DUARTE</span></div>
+<div><div style="font-weight:900;font-size:14px;font-family:'JetBrains Mono'">PROXY DUARTE V6</div><div style="font-size:10px;color:#00ff88;font-weight:700;font-family:'JetBrains Mono'">ESP ONLY</div></div>
+</div>
+<div class="close-btn" onclick="fecharModal()">✕</div>
+</div>
+<div class="modal-tabs">
+<div class="tab active" id="tabAIM" onclick="trocarAba('AIM')">⚡ AIM</div>
+<div class="tab" id="tabINFO" onclick="trocarAba('INFO')">ℹ️ INFO</div>
+</div>
+<div class="modal-content">
+<div id="conteudoAIM">
+<div style="text-align:center;padding:22px">
+<div style="font-size:42px">👁️</div>
+<div style="font-weight:900;font-size:16px;font-family:'JetBrains Mono';margin-top:10px">MODO ESP ATIVO</div>
+<div style="font-size:12px;color:#8a9bb0;margin-top:8px">Apenas AIM HEAD+ESP disponível.</div>
+<div class="card iniciar" style="margin-top:20px" onclick="fecharModal()"><div class="card-icon">✅</div><div style="flex:1"><div class="card-title">Voltar ao Painel</div><div class="card-desc">Fechar</div></div></div>
+</div>
+</div>
+<div id="conteudoINFO" style="display:none">
+<div class="info-hero">
+<div class="avatar"><span>DM</span></div>
+<div class="creator-name">DUARTE MODDER OFC</div>
+<div class="creator-tag"><span class="dot"></span> ESP EXCLUSIVE • VERIFICADO</div>
+<div class="status-box">
+<div class="status-item"><b><span class="dot"></span> ONLINE</b><span>CORE</span></div>
+<div class="status-item"><b>V6.0</b><span>ESP</span></div>
+<div class="status-item"><b>2026</b><span>BUILD</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="aviso" id="aviso"></div>
+</div>
+<script>
+const NOVA_KEY = "DUARTE-UPDATE-2352";
+window.onload=()=>{
+  localStorage.clear();
+  sessionStorage.clear();
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('mainContent').classList.remove('show');
+};
+function fazerLogin(){
+  const input=document.getElementById('keyInput');
+  const key=input.value.trim().toUpperCase();
+  const btn=document.getElementById('btnLogin');
+  const error=document.getElementById('loginError');
+  const success=document.getElementById('loginSuccess');
+  error.classList.remove('show');success.classList.remove('show');
+  if(!key){error.textContent="⚠️ DIGITE SUA KEY!";error.classList.add('show');return}
+  btn.textContent="⏳ VERIFICANDO...";btn.disabled=true;
+  if(key===NOVA_KEY){
+    success.textContent="✅ KEY CORRETA! Liberando ESP...";
+    success.classList.add('show');
+    setTimeout(()=>{liberarAcesso()},600);
+  }else{
+    error.textContent="❌ KEY INVÁLIDA!";
+    error.classList.add('show');
+    btn.textContent="⚡ DESBLOQUEAR";
+    btn.disabled=false;
+  }
+}
+function liberarAcesso(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainContent').classList.add('show');
+  mostrarAviso("✅ ESP Online!","green")
+}
+document.getElementById('keyInput')?.addEventListener('keypress',(e)=>{if(e.key==='Enter')fazerLogin()});
+const LINKS={func2:"https://www.mediafire.com/file/0gpu7itxzlcyk9i/AIMBOT+ESP+ONLY.zip/file",whatsapp:"https://whatsapp.com/channel/0029VbDlssb4dTnOOA3MXj0c",youtube:"https://www.youtube.com/@DUARTE_MODDER"};
+let ativa=null;
+function abrirModal(){document.getElementById('overlay').classList.add('show')}
+function fecharModal(e){if(!e||e.target.id==='overlay'||e.target.className==='close-btn'){document.getElementById('overlay').classList.remove('show')}}
+function trocarAba(nome){document.getElementById('tabAIM').classList.remove('active');document.getElementById('tabINFO').classList.remove('active');document.getElementById('conteudoAIM').style.display='none';document.getElementById('conteudoINFO').style.display='none';document.getElementById('tab'+nome).classList.add('active');document.getElementById('conteudo'+nome).style.display='block'}
+function mostrarAviso(texto,cor='red'){const aviso=document.getElementById('aviso');aviso.textContent=texto;aviso.className='aviso show'+(cor==='green'?' green':'');setTimeout(()=>aviso.classList.remove('show'),2500)}
+function abrirCanal(tipo){mostrarAviso('🚀 Abrindo '+tipo.toUpperCase(),'green');setTimeout(()=>window.open(LINKS[tipo],'_blank'),500)}
+function toggleFunc(id){const card=document.getElementById(id);const icon=document.getElementById('icon2');const badge=document.getElementById('badge2');const desc=document.getElementById('desc2');const descProxy=document.getElementById('descProxy');if(card.classList.contains('ativado')){card.classList.remove('ativado');badge.textContent='OFFLINE';desc.textContent='Toque para ativar';icon.textContent='👁️';ativa=null;descProxy.textContent='Ative o ESP primeiro';return}badge.textContent='ATIVANDO...';icon.textContent='⏳';setTimeout(()=>{card.classList.add('ativado');badge.textContent='ONLINE';desc.textContent='ESP em execução • ON';icon.textContent='✅';ativa=id;descProxy.textContent='Pronto para ESP → Executar';mostrarAviso('✅ AIM HEAD+ESP ativado!','green')},400)}
+function iniciarProxy(){if(!ativa){mostrarAviso('⚠️ Ative o ESP primeiro!');return}const descProxy=document.getElementById('descProxy');descProxy.textContent='Injetando ESP...';mostrarAviso('🚀 Iniciando ESP','green');setTimeout(()=>{window.open(LINKS[ativa],'_blank');descProxy.textContent='Pronto para ESP → Executar'},800)}
+</script>
+</body>
+</html>
